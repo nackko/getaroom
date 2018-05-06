@@ -37,7 +37,7 @@ class NearbyHelper : ContextWrapper {
     open class NearbyPayloadCallback : PayloadCallback(){
         override fun onPayloadReceived(p0: String, p1: Payload) {
             val authcode = String(p1.asBytes()!!,UTF_8)
-            Log.i(TAG, "BytePayload received :$authcode")
+            Log.i(TAG, "BytePayload received :$authcode, writing it to model")
 
             mMainActivityModel.setAuthCode(authcode)
 

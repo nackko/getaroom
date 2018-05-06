@@ -2,6 +2,7 @@ package com.ludoscity.getaroom
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.StrictMode
 
 /**
  * Skeleton of an Android Things activity.
@@ -28,7 +29,13 @@ class ThingsMainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //TODO: production code would perform network operations on a background thread
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
         val activityModel = MainActivityViewModel()
+
+        AuthHelper.init(activityModel)
 
         NearbyHelper.init(this, activityModel, NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback()),
                 NearbyHelper.NearbyEndpointDiscoveryCallback(NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback())),

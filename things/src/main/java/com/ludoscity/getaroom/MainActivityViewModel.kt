@@ -31,4 +31,16 @@ class MainActivityViewModel : ViewModel() {
     fun setNearbyConnectionState(toSet: NearbyConnectionState){
         mNearbyConnectionState.postValue(toSet)
     }
+
+    enum class LoginState{
+        LOGGED_OUT, LOGGED_IN, LOGGING_IN
+    }
+
+    private val mLoginState = MutableLiveData<LoginState>()
+    val getLoginState: LiveData<LoginState>
+        get() = mLoginState
+    fun setLoginState(toSet: LoginState) {
+        mLoginState.value = toSet
+    }
+
 }
