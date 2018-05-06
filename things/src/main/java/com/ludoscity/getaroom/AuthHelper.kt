@@ -38,13 +38,15 @@ class AuthHelper {
         }
     }
 
-    var mGoogleCredential : GoogleCredential? = null
+    private lateinit var mGoogleCredential : GoogleCredential
+    val googleCredential : GoogleCredential
+        get() = mGoogleCredential
 
     val accessToken: String
-        get() = mGoogleCredential!!.accessToken
+        get() = mGoogleCredential.accessToken
     //both those are convenience
     val refreshToken: String
-        get() = mGoogleCredential!!.refreshToken
+        get() = mGoogleCredential.refreshToken
 
 
     fun buildCredentialsAndUpdateActivityModel(tokenResponse: TokenResponse?){
@@ -59,7 +61,10 @@ class AuthHelper {
                 .setTransport(NetHttpTransport())
                 .setClientSecrets(clientSecrets).build().setFromTokenResponse(tokenResponse)
 
-        Log.i(TAG, "Credentials built, we're logged in, updating model")
+        Log.i(TAG, "Credentials built, we're logged in, updating model Login state")
+        Log.i(TAG, "Access token :" + mGoogleCredential.accessToken)
+        Log.i(TAG, "Refresh token :" + mGoogleCredential.refreshToken)
+
 
         mActivityModel.setLoginState(MainActivityViewModel.LoginState.LOGGED_IN)
     }

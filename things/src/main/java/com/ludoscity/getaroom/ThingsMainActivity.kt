@@ -36,6 +36,7 @@ class ThingsMainActivity : Activity() {
         val activityModel = MainActivityViewModel()
 
         AuthHelper.init(activityModel)
+        GoogleCalendarHelper.init(activityModel)
 
         NearbyHelper.init(this, activityModel, NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback()),
                 NearbyHelper.NearbyEndpointDiscoveryCallback(NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback())),
