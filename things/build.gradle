@@ -28,5 +28,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     compileOnly 'com.google.android.things:androidthings:0.8-devpreview'
+    //noinspection GradleDependency. Play services is bundled with system image
+    implementation 'com.google.android.gms:play-services-nearby:12.0.1'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

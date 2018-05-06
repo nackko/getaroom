@@ -12,8 +12,6 @@ import android.arch.lifecycle.ViewModel
 
 class MainActivityViewModel : ViewModel() {
 
-    lateinit var nearbyEndpointId : String
-
     private val mAuthCode = MutableLiveData<String>()
     val getAuthCode: LiveData<String>
         get() = mAuthCode

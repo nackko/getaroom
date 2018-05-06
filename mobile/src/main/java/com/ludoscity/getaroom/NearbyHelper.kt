@@ -22,7 +22,6 @@ class NearbyHelper : ContextWrapper {
         }
 
         override fun onPayloadTransferUpdate(p0: String, p1: PayloadTransferUpdate) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
     }
@@ -30,15 +29,29 @@ class NearbyHelper : ContextWrapper {
     open class NearbyConnectionLifecycleCallback(private var mPayloadCallback: NearbyPayloadCallback) : ConnectionLifecycleCallback(){
 
         override fun onConnectionResult(p0: String, p1: ConnectionResolution) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            when(p1.status.statusCode){
+                ConnectionsStatusCodes.STATUS_OK -> {
+                    Log.i(TAG, "Nearby connection successfully established. updating model")
+
+                    mMainActivityModel.nearbyEndpointId = p0
+                    mMainActivityModel.setNearbyConnectionState(MainActivityViewModel.NearbyConnectionState.CONNECTED)
+                }
+                ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED, ConnectionsStatusCodes.STATUS_ERROR ->{
+                    Log.w(TAG, "connection could not be established !")
+                }
+            }
         }
 
         override fun onDisconnected(p0: String) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            Log.i(TAG, "Nearby connection disconnected. updating model")
+
+            mMainActivityModel.setNearbyConnectionState(MainActivityViewModel.NearbyConnectionState.DISCONNECTED)
         }
 
         override fun onConnectionInitiated(p0: String, p1: ConnectionInfo) {
-            Nearby.getConnectionsClient(NearbyHelper.instance.applicationContext).acceptConnection("getUserEmail", mPayloadCallback)
+            Log.i(TAG, "Nearby connection initiated - accepting")
+            Nearby.getConnectionsClient(NearbyHelper.instance.applicationContext).acceptConnection(p0, mPayloadCallback)
+            mMainActivityModel.setNearbyConnectionState(MainActivityViewModel.NearbyConnectionState.CONNECTING)
         }
 
     }
@@ -79,7 +92,16 @@ class NearbyHelper : ContextWrapper {
         mAdvertisingStartSuccessListener = advertisingStartSuccessListener
         mAdvertisingStartFailureListener = advertisingStartFailureListener
 
-
+        mMainActivityModel.getNearbyConnectionState.observeForever({ nearbyConnectionState ->
+            Log.i(TAG, "NearbyConnectionState updated in model")
+            if (nearbyConnectionState == MainActivityViewModel.NearbyConnectionState.CONNECTED){
+                Log.i(TAG, "Connected ! Sending auth code as BytePayload")
+                Nearby.getConnectionsClient(NearbyHelper.instance.applicationContext).sendPayload(
+                        mMainActivityModel.nearbyEndpointId,
+                        Payload.fromBytes(mMainActivityModel.getAuthCode.value!!.toByteArray())
+                )
+            }
+        })
     }
 
     fun startAdvertising() {

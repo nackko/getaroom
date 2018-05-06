@@ -27,5 +27,14 @@ class ThingsMainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val activityModel = MainActivityViewModel()
+
+        NearbyHelper.init(this, activityModel, NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback()),
+                NearbyHelper.NearbyEndpointDiscoveryCallback(NearbyHelper.NearbyConnectionLifecycleCallback(NearbyHelper.NearbyPayloadCallback())),
+                NearbyHelper.NearbyDiscoveryStartSuccessListener(),
+                NearbyHelper.NearbyDiscoveryStartFailureListener())
+
+        NearbyHelper.instance.startDiscovery()
     }
 }
